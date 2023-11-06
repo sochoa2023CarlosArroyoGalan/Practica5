@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.updatePadding
 import androidx.navigation.fragment.findNavController
 import net.iessochoa.carlosarroyogalan.practica5.R
 import net.iessochoa.carlosarroyogalan.practica5.databinding.FragmentTareaBinding
@@ -33,8 +34,12 @@ class TareaFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.buttonSecond.setOnClickListener {
+        /*binding.buttonSecond.setOnClickListener {
             findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
+        }*/
+        binding.root.setOnApplyWindowInsetsListener { view, insets ->
+            view.updatePadding(bottom = insets.systemWindowInsetBottom)
+            insets
         }
     }
 

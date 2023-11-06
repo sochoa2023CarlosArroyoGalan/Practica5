@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.updatePadding
 import androidx.navigation.fragment.findNavController
 import net.iessochoa.carlosarroyogalan.practica5.R
 import net.iessochoa.carlosarroyogalan.practica5.databinding.FragmentListaBinding
@@ -33,8 +34,17 @@ class ListaFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.buttonFirst.setOnClickListener {
+        /*binding.buttonFirst.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+        }*/
+
+        binding.fabNuevo.setOnClickListener{
+            findNavController().navigate(R.id.action_editar)
+        }
+
+        binding.root.setOnApplyWindowInsetsListener { view, insets ->
+            view.updatePadding(bottom = insets.systemWindowInsetBottom)
+            insets
         }
     }
 
