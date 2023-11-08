@@ -1,12 +1,16 @@
 package net.iessochoa.carlosarroyogalan.practica5.ui
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.core.view.updatePadding
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import net.iessochoa.carlosarroyogalan.practica5.R
 import net.iessochoa.carlosarroyogalan.practica5.databinding.FragmentTareaBinding
 
@@ -41,7 +45,57 @@ class TareaFragment : Fragment() {
             view.updatePadding(bottom = insets.systemWindowInsetBottom)
             insets
         }
+        iniciaSpCategoria()
+        iniciaSpPropiedades()
+
+
     }
+    private fun iniciaSpCategoria() {
+        ArrayAdapter.createFromResource(
+            //contexto suele ser la Activity
+            requireContext(),
+            //array de strings
+            R.array.categoria,
+            //layout para mostrar el elemento seleccionado
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            // Layout para mostrar la apariencia de la lista
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            // asignamos el adaptador al spinner
+            binding.spCategoria.adapter = adapter
+        }
+    }
+    private fun iniciaSpPropiedades() {
+        ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.prioridad,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.spPrioridad.adapter = adapter
+            binding.spPrioridad.onItemSelectedListener=object : AdapterView.OnItemSelectedListener{
+                override fun onItemSelected(p0: AdapterView<*>?, v: View?, posicion: Int, id: Long) {
+                    //el array son 3 elementos y "alta" ocupa la tercera posición
+                    if(posicion==2){
+                        binding.nestedScrollView.setBackgroundColor(requireContext().getColor(R.color.prioridad_alta))
+                    }else{//si no es prioridad alta quitamos el color
+                        binding.nestedScrollView.setBackgroundColor(Color.TRANSPARENT)
+                    }
+                    val valor=binding.spCategoria.getItemAtPosition(posicion)
+//creamos el mensaje desde el recurso string parametrizado
+                    val mensaje=getString(R.string.mensaje_categoria,valor)
+//mostramos el mensaje donde "binding.root" es el ContrainLayout principal
+                    Snackbar.make(binding.root, mensaje, Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show()
+                }
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+                    binding.nestedScrollView.setBackgroundColor(Color.TRANSPARENT)
+                }
+            }
+
+        }
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
