@@ -47,6 +47,7 @@ class TareaFragment : Fragment() {
         }
         iniciaSpCategoria()
         iniciaSpPropiedades()
+        iniciaSwPagado()
 
 
     }
@@ -63,6 +64,26 @@ class TareaFragment : Fragment() {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             // asignamos el adaptador al spinner
             binding.spCategoria.adapter = adapter
+            binding.spCategoria.onItemSelectedListener =
+                object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(
+                        p0: AdapterView<*>?,
+                        v: View?,
+                        posicion: Int,
+                        id: Long
+                    ) {
+                        val valor = binding.spCategoria.getItemAtPosition(posicion)
+                        //creamos el mensaje desde el recurso string parametrizado
+                        val mensaje = getString(R.string.mensaje_categoria, valor)
+//mostramos el mensaje donde "binding.root" es el ContrainLayout principal
+                        Snackbar.make(binding.root, mensaje, Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show()
+                    }
+
+                    override fun onNothingSelected(p0: AdapterView<*>?) {
+                        binding.nestedScrollView.setBackgroundColor(Color.TRANSPARENT)
+                    }
+                }
         }
     }
     private fun iniciaSpPropiedades() {
@@ -81,12 +102,6 @@ class TareaFragment : Fragment() {
                     }else{//si no es prioridad alta quitamos el color
                         binding.nestedScrollView.setBackgroundColor(Color.TRANSPARENT)
                     }
-                    val valor=binding.spCategoria.getItemAtPosition(posicion)
-//creamos el mensaje desde el recurso string parametrizado
-                    val mensaje=getString(R.string.mensaje_categoria,valor)
-//mostramos el mensaje donde "binding.root" es el ContrainLayout principal
-                    Snackbar.make(binding.root, mensaje, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show()
                 }
                 override fun onNothingSelected(p0: AdapterView<*>?) {
                     binding.nestedScrollView.setBackgroundColor(Color.TRANSPARENT)
@@ -94,6 +109,18 @@ class TareaFragment : Fragment() {
             }
 
         }
+    }
+    private fun iniciaSwPagado() {
+        binding.swPagado.setOnCheckedChangeListener { _, isChecked ->
+            //cambiamos el icono si está marcado o no el switch
+            val imagen=if (isChecked) R.drawable.ic_pagado
+            else R.drawable.ic_no_pagado
+            //asignamos la imagen desde recursos
+            binding.ivPagado.setImageResource(imagen)
+        }
+        //iniciamos a valor false
+        binding.swPagado.isChecked=false
+        binding.ivPagado.setImageResource(R.drawable.ic_no_pagado)
     }
 
 
