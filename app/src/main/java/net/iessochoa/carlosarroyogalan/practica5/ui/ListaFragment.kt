@@ -63,6 +63,8 @@ class ListaFragment : Fragment() {
             val action=ListaFragmentDirections.actionEditar(tarea)
             findNavController().navigate(action)
         }
+        //Llamada al metodo.
+        iniciaFiltros()
 
         binding.root.setOnApplyWindowInsetsListener { view, insets ->
             view.updatePadding(bottom = insets.systemWindowInsetBottom)
@@ -92,6 +94,12 @@ class ListaFragment : Fragment() {
             }
         }
         binding.tvLista.setText(listaString)
+    }
+    private fun iniciaFiltros(){
+        binding.swSinPagar.setOnCheckedChangeListener( ) { _,isChecked->
+            //actualiza el LiveData SoloSinPagarLiveData que a su vez modifica tareasLiveData
+            //mediante el Transformation
+            viewModel.setSoloSinPagar(isChecked)}
     }
 
 

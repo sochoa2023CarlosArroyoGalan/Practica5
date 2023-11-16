@@ -64,4 +64,13 @@ object ModelTempTareas {
         tareas.remove(tarea)
         tareasLiveData.value = tareas
     }
+    fun getTareasFiltroSinPagar(soloSinPagar:Boolean): LiveData<List<Tarea>> {
+        //devuelve el LiveData con la lista filtrada o entera
+        tareasLiveData.value=if(soloSinPagar)
+            tareas.filter { !it.pagado } as ArrayList<Tarea>
+        else
+            tareas
+        return tareasLiveData
+    }
+
 }
