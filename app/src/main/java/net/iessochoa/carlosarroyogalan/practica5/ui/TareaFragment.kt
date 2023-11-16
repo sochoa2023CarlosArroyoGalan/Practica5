@@ -9,11 +9,16 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.SeekBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.updatePadding
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import net.iessochoa.carlosarroyogalan.practica5.R
 import net.iessochoa.carlosarroyogalan.practica5.databinding.FragmentTareaBinding
+import net.iessochoa.carlosarroyogalan.practica5.model.Tarea
+import net.iessochoa.carlosarroyogalan.practica5.viewmodel.AppViewModel
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
@@ -21,6 +26,10 @@ import net.iessochoa.carlosarroyogalan.practica5.databinding.FragmentTareaBindin
 class TareaFragment : Fragment() {
 
     private var _binding: FragmentTareaBinding? = null
+    val args: TareaFragmentArgs by navArgs()
+    private val viewModel: AppViewModel by activityViewModels()
+    //será una tarea nueva si no hay argumento
+    val esNuevo by lazy { args.tarea==null }
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -52,6 +61,14 @@ class TareaFragment : Fragment() {
         iniciaSwPagado()
         iniciaRgEstado()
         iniciaSbHoras()
+        iniciaFabGuardar()
+
+        if (esNuevo)//nueva tarea
+        //cambiamos el título de la ventana
+            (requireActivity() as AppCompatActivity).supportActionBar?.title = "Nueva tarea"
+        else
+            iniciaTarea(args.tarea!!)
+
     }
     private fun iniciaSpCategoria() {
         ArrayAdapter.createFromResource(
@@ -155,6 +172,62 @@ class TareaFragment : Fragment() {
         //inicio del progreso
         binding.sbHoras.progress=0
         binding.tvHoras.text=getString(R.string.horas_trabajadas,0)
+    }
+    private fun iniciaTarea(tarea: Tarea) {
+        binding.spCategoria.setSelection(tarea.categoria)
+        binding.spPrioridad.setSelection(tarea.prioridad)
+        binding.swPagado.isChecked = tarea.pagado
+        binding.rgEstado.check(
+            when (tarea.estado) {
+                0 -> R.id.rbAbierta
+                1 -> R.id.rbEnCurso
+                else -> R.id.rbCerrada
+            }
+        )
+        binding.sbHoras.progress = tarea.horasTrabajo
+        binding.rtbValoracion.rating = tarea.valoracionCliente
+        binding.etTecnico.setText(tarea.tecnico)
+        binding.etDescripcion.setText(tarea.descripcion)
+        //cambiamos el título
+        (requireActivity() as AppCompatActivity).supportActionBar?.title = "Tarea ${tarea.id}"
+    }
+    private fun guardaTarea() {
+        //recuperamos los datos
+        val categoria=binding.spCategoria.selectedItemPosition
+        val prioridad=binding.spPrioridad.selectedItemPosition
+        val pagado=binding.swPagado.isChecked
+        val estado=when (binding.rgEstado.checkedRadioButtonId) {
+            R.id.rbAbierta -> 0
+            R.id.rbEnCurso -> 1
+            else -> 2
+        }
+        val horas=binding.sbHoras.progress
+        val valoracion=binding.rtbValoracion.rating
+        val tecnico=binding.etTecnico.text.toString()
+        val descripcion=binding.etDescripcion.text.toString()
+        //creamos la tarea: si es nueva, generamos un id, en otro caso le asignamos su id
+        val tarea = if(esNuevo)
+
+            Tarea(categoria,prioridad,pagado,estado,horas,valoracion,tecnico,descripcion)
+        else
+
+            Tarea(args.tarea!!.id,categoria,prioridad,pagado,estado,horas,valoracion,tecnico,descripcion)
+        //guardamos la tarea desde el viewmodel
+        viewModel.addTarea(tarea)
+        //salimos de editarFragment
+        findNavController().popBackStack()
+    }
+    private fun muestraMensajeError() {
+        val mensaje=getString(R.string.mensaje_vacio)
+        Snackbar.make(binding.root,mensaje,Snackbar.LENGTH_LONG).setAction("Action", null).show()
+    }
+    private fun iniciaFabGuardar() {
+        binding.fabGuardar.setOnClickListener {
+            if (binding.etTecnico.text.toString().isEmpty() || binding.etDescripcion.text.toString().isEmpty())
+                muestraMensajeError()
+            else
+                guardaTarea()
+        }
     }
 
     override fun onDestroyView() {
