@@ -72,5 +72,15 @@ object ModelTempTareas {
             tareas
         return tareasLiveData
     }
-
+    fun getTareasFiltroEstado(estado:Int): LiveData<List<Tarea>> {
+        tareasLiveData.value = if (estado == 2)
+            tareas.filter { it.estado == estado } as java.util.ArrayList<Tarea>
+        else if (estado == 1)
+            tareas.filter { it.estado == estado } as java.util.ArrayList<Tarea>
+        else if (estado == 0)
+            tareas.filter { it.estado == estado } as java.util.ArrayList<Tarea>
+        else
+            tareas
+        return tareasLiveData
+    }
 }

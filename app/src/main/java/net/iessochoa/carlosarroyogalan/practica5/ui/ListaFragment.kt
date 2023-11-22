@@ -99,8 +99,20 @@ class ListaFragment : Fragment() {
         binding.swSinPagar.setOnCheckedChangeListener( ) { _,isChecked->
             //actualiza el LiveData SoloSinPagarLiveData que a su vez modifica tareasLiveData
             //mediante el Transformation
-            viewModel.setSoloSinPagar(isChecked)}
+            viewModel.setSoloSinPagar(isChecked)
+        }
+        binding.rgEstadoList.setOnCheckedChangeListener {_, checkedId ->
+            val estado = when (checkedId){
+                R.id.rbAbierta2 -> 0
+                R.id.rbEnCurso2 -> 1
+                R.id.rbCerrada2 -> 2
+                R.id.rbTodas -> 3
+                else -> 1
+            }
+            viewModel.setEstado(estado)
+        }
     }
+
 
 
     override fun onDestroyView() {

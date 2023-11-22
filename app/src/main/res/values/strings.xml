@@ -64,4 +64,8 @@
     <string name="horas_trabajadas">Llevo %1$d horas trabajadas</string>
     <string name="Tecnico">Técnico</string>
     <string name="mensaje_vacio">Es necesario rellenar todos los campos.</string>
+    <string name="todas">Todas</string>
+    <string name="cerrada2">Cerrada</string>
+    <string name="en_curso2">En curso</string>
+    <string name="abierta2">Abierta</string>
 </resources>
