@@ -54,7 +54,7 @@ class ListaFragment : Fragment() {
 
         }
 //para prueba, editamos una tarea aleatoria
-        binding.btPruebaEdicion.setOnClickListener{
+        /**binding.btPruebaEdicion.setOnClickListener{
 //cogemos la lista actual de Tareas que tenemos en el ViewModel. No es lo más correcto
             val lista= viewModel.tareasLiveData.value
             //buscamos una tarea aleatoriamente
@@ -62,7 +62,7 @@ class ListaFragment : Fragment() {
             //se la enviamos a TareaFragment para su edición
             val action=ListaFragmentDirections.actionEditar(tarea)
             findNavController().navigate(action)
-        }
+        }*/
         //Llamada al metodo.
         iniciaFiltros()
 
@@ -93,7 +93,7 @@ class ListaFragment : Fragment() {
                 )
             }
         }
-        binding.tvLista.setText(listaString)
+      //  binding.tvLista.setText(listaString)
     }
     private fun iniciaFiltros(){
         binding.swSinPagar.setOnCheckedChangeListener( ) { _,isChecked->
