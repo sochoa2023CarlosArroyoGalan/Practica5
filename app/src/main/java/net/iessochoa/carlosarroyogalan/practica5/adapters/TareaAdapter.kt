@@ -1,7 +1,10 @@
 package net.iessochoa.carlosarroyogalan.practica5.adapters
 
+import android.graphics.Color
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import net.iessochoa.carlosarroyogalan.practica5.R
 import net.iessochoa.carlosarroyogalan.practica5.databinding.ItemTareaBinding
 import net.iessochoa.carlosarroyogalan.practica5.model.Tarea
 
@@ -25,7 +28,31 @@ class TareaAdapter  :RecyclerView.Adapter<TareaAdapter.TareaViewHolder>()
             TODO("Not yet implemented")
         }
 
-        override fun onBindViewHolder(holder: TareaViewHolder, position: Int) {
-            TODO("Not yet implemented")
+        override fun onBindViewHolder(tareaViewHolder: TareaViewHolder, pos: Int) {
+            //Nos pasan la posición del item a mostrar en el viewHolder
+            with(tareaViewHolder) {
+                //cogemos la tarea a mostrar y rellenamos los campos del ViewHolder
+                with(listaTareas!!.get(pos)) {
+                    binding.tvId.text = id.toString()
+                    binding.tvDescripciN.text = descripcion
+                    binding.tvTecnico.text = tecnico
+                    binding.ratingBar.rating = valoracionCliente
+                    //mostramos el icono en función del estado
+                    binding.ivEstadow.setImageResource(
+                        when (estado) {
+                            0 -> R.drawable.ic_abierto
+                            1 -> R.drawable.ic_encurso
+                            else -> R.drawable.ic_cerrado
+                        }
+                    )
+                    //cambiamos el color de fondo si la prioridad es alta
+                    binding.cvItem.setBackgroundResource(
+                        if (prioridad == 2)//prioridad alta
+                            R.color.prioridad_alta
+                        else
+                            Color.TRANSPARENT
+                    )
+                }
+            }
         }
     }

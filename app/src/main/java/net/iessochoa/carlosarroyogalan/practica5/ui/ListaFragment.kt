@@ -9,7 +9,9 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import net.iessochoa.carlosarroyogalan.practica5.R
+import net.iessochoa.carlosarroyogalan.practica5.adapters.TareaAdapter
 import net.iessochoa.carlosarroyogalan.practica5.databinding.FragmentListaBinding
 import net.iessochoa.carlosarroyogalan.practica5.model.Tarea
 import net.iessochoa.carlosarroyogalan.practica5.viewmodel.AppViewModel
@@ -21,7 +23,7 @@ class ListaFragment : Fragment() {
 
     private var _binding: FragmentListaBinding? = null
     private val viewModel: AppViewModel by activityViewModels()
-
+    lateinit var tareaAdapter: TareaAdapter
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -39,6 +41,13 @@ class ListaFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        iniciaRecyclerView()
+        iniciaFiltros()
+        viewModel.tareasLiveData.observe(viewLifecycleOwner,
+            Observer<List<Tarea>> { lista ->
+                //actualizaLista(lista)
+                tareaAdapter.setLista(lista)
+            })
 
         viewModel.tareasLiveData.observe(viewLifecycleOwner, Observer<List<Tarea>> { lista ->
             actualizaLista(lista)
@@ -112,7 +121,17 @@ class ListaFragment : Fragment() {
             viewModel.setEstado(estado)
         }
     }
+    private fun iniciaRecyclerView() {
+        //creamos el adaptador
+        tareaAdapter = TareaAdapter()
 
+        with(binding.rvTareas) {
+            //Creamos el layoutManager
+            layoutManager = LinearLayoutManager(activity)
+            //le asignamos el adaptador
+            adapter = tareaAdapter
+        }
+    }
 
 
     override fun onDestroyView() {
