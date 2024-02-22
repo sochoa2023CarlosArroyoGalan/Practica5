@@ -1,6 +1,7 @@
 package net.iessochoa.carlosarroyogalan.practica5.adapters
 
 import android.graphics.Color
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
@@ -20,13 +21,15 @@ class TareaAdapter  :RecyclerView.Adapter<TareaAdapter.TareaViewHolder>()
     inner class TareaViewHolder(val binding: ItemTareaBinding)
         :RecyclerView.ViewHolder(binding.root)
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TareaViewHolder {
-            TODO("Not yet implemented")
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):
+                TareaViewHolder {
+            val binding = ItemTareaBinding
+                .inflate(LayoutInflater.from(parent.context), parent, false)
+            return TareaViewHolder(binding)
         }
 
-        override fun getItemCount(): Int {
-            TODO("Not yet implemented")
-        }
+        override fun getItemCount(): Int = listaTareas?.size?:0
+
 
         override fun onBindViewHolder(tareaViewHolder: TareaViewHolder, pos: Int) {
             //Nos pasan la posición del item a mostrar en el viewHolder

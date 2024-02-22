@@ -23,7 +23,7 @@ class ListaFragment : Fragment() {
 
     private var _binding: FragmentListaBinding? = null
     private val viewModel: AppViewModel by activityViewModels()
-    lateinit var tareaAdapter: TareaAdapter
+    private lateinit var tareaAdapter: TareaAdapter
 
     // This property is only valid between onCreateView and
     // onDestroyView.
