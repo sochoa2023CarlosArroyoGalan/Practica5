@@ -451,7 +451,7 @@ class TareaFragment : Fragment() {
                 explicarPermisos()
             }
         }
-    //Metodo en el que al pulsar sobre el icono en caso de tener permisos bucará la foto o en caso contrario solicitará permiso
+    //Metodo en el que al pulsar sobre el icono en caso de tener permisos bucará la foto o en caso contrario solicitará permiso/
     fun iniciaIvBuscarFoto() {
         binding.ivBuscarFoto.setOnClickListener() {
             when {
