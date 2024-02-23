@@ -74,7 +74,7 @@ object ModelTempTareas {
         // Thread.sleep(10000)
         tareas.remove(tarea)
         //tareasLiveData.value = tareas
-        //Cambiamos el tarea live data a postValue para poder usar el LiveData de forma concurrente
+        //Cambiamos el tarea live data a postValue para poder usar el LiveData de forma concurrente/
         tareasLiveData.postValue(tareas)
 
     }
