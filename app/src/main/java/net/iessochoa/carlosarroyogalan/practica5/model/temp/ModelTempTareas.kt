@@ -4,6 +4,8 @@ import android.app.Application
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import net.iessochoa.carlosarroyogalan.practica5.model.Tarea
 import kotlin.random.Random
 
@@ -17,7 +19,10 @@ object ModelTempTareas {
     //Permite iniciar el objeto Singleton
     operator fun invoke(context: Context){
         this.application= context.applicationContext as Application
-        iniciaPruebaTareas()
+        //iniciaPruebaTareas()
+        //Ya que la anterior llamada no puede funcionar lo llamaremos mediante un scope de caracter global
+        GlobalScope.launch { iniciaPruebaTareas() }
+
     }
     fun getAllTareas(): LiveData<List<Tarea>> {
         tareasLiveData.value= tareas
@@ -36,7 +41,7 @@ object ModelTempTareas {
 
         tareasLiveData.postValue(tareas)
     }
-    fun iniciaPruebaTareas() {
+    suspend fun iniciaPruebaTareas() {
         val tecnicos = listOf(
             "Pepe Gotero",
             "Sacarino Pómez",
@@ -60,7 +65,9 @@ object ModelTempTareas {
             tareas.add(tarea)
         })
         //actualizamos el LiveData
-        tareasLiveData.value = tareas
+        //tareasLiveData.value = tareas
+        //Lo cambiamos para que funcione de forma concurrente
+        tareasLiveData.postValue(tareas)
     }
     //Marcamos delTarea como función suspend
     suspend fun delTarea(tarea: Tarea) {
