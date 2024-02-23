@@ -2,6 +2,7 @@ package net.iessochoa.carlosarroyogalan.practica5.ui
 
 import android.graphics.Color
 import android.os.Bundle
+import android.preference.PreferenceManager
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -62,10 +63,12 @@ class TareaFragment : Fragment() {
         iniciaRgEstado()
         iniciaSbHoras()
         iniciaFabGuardar()
-
+        //En caso de que la tarea sea nueva la llamaremos con un if
         if (esNuevo)//nueva tarea
-        //cambiamos el título de la ventana
+        {//cambiamos el título de la ventana
             (requireActivity() as AppCompatActivity).supportActionBar?.title = "Nueva tarea"
+            iniciaTecnico()
+        }
         else
             iniciaTarea(args.tarea!!)
 
@@ -228,6 +231,16 @@ class TareaFragment : Fragment() {
             else
                 guardaTarea()
         }
+    }
+    //Creamos el método que recupera el valor y asignamos el campo tecnico
+    private fun iniciaTecnico(){
+            //Recuperamos prefencias
+        val sharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(requireContext())
+            //Recuperamos el nombre de nuestro usuario (tambien hemos cambiado el metodo a MainActivity.PREF_NOMBRE)
+        val tecnico = sharedPreferences.getString(MainActivity.PREF_NOMBRE, "")
+            //Se lo asignamos a etTecnico
+        binding.etTecnico.setText(tecnico)
     }
 
     override fun onDestroyView() {

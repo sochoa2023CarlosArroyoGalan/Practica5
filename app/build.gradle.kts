@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "net.iessochoa.carlosarroyogalan.practica5"
-        minSdk = 24
+        minSdk = 27
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
