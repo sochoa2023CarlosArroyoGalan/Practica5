@@ -19,7 +19,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 Intent(Intent.ACTION_VIEW,
                     Uri.parse("https://portal.edu.gva.es/03013224/"))
             )
-            //Devuelve un booleano para confirmas el cambio
+            //Devuelve un booleano para confirmas el cambio/
             false
         }
     }
