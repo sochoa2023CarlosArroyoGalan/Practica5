@@ -8,6 +8,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import net.iessochoa.carlosarroyogalan.practica5.R
 import net.iessochoa.carlosarroyogalan.practica5.databinding.ActivityMainBinding
 
@@ -42,6 +43,8 @@ class MainActivity : AppCompatActivity() {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
+            //Llamamiento en caso de que el usuario pulse sobre la acción
+            R.id.action_prueba -> actionPrueba()
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
@@ -51,5 +54,10 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()
+    }
+    //Creamos un método para la acción de prueba
+    fun actionPrueba():Boolean{
+        Toast.makeText(this,"Prueba de menú",Toast.LENGTH_SHORT).show()
+        return true
     }
 }

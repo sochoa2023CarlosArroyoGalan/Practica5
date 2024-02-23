@@ -76,7 +76,7 @@ object ModelTempTareas {
         //tareasLiveData.value = tareas
         //Cambiamos el tarea live data a postValue para poder usar el LiveData de forma concurrente
         tareasLiveData.postValue(tareas)
-        //
+
     }
     fun getTareasFiltroSinPagar(soloSinPagar:Boolean): LiveData<List<Tarea>> {
         //devuelve el LiveData con la lista filtrada o entera
