@@ -2,7 +2,9 @@ package net.iessochoa.carlosarroyogalan.practica5.ui
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,6 +14,7 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,7 +28,8 @@ import net.iessochoa.carlosarroyogalan.practica5.viewmodel.AppViewModel
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
-class ListaFragment : Fragment() {
+//Para detectar cuando el usuario cambie de color usaremos la siguiente implementación
+class ListaFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     private var _binding: FragmentListaBinding? = null
     private val viewModel: AppViewModel by activityViewModels()
@@ -131,7 +135,8 @@ class ListaFragment : Fragment() {
     private fun iniciaRecyclerView() {
         //Creamos el adaptador
         tareaAdapter = TareaAdapter()
-
+        //Asignación del color
+        tareaAdapter.colorPrioridadAlta=obtenColorPreferencias()
         with(binding.rvTareas) {
             //Creación del layoutManager
             //layoutManager = LinearLayoutManager(activity)
@@ -217,10 +222,35 @@ class ListaFragment : Fragment() {
         //Evento enlazado con RecyclerView
         itemTouchHelper.attachToRecyclerView(binding.rvTareas)
     }
+    //Método que recupera el color actual que el usuario ha seleccionado
+    private fun obtenColorPreferencias():Int{
+        val colorPorDefecto=resources.getStringArray(R.array.color_values)[0]
+        val color= PreferenceManager.getDefaultSharedPreferences(requireContext()).getString(MainActivity.PREF_COLOR_PRIORIDAD, colorPorDefecto)
+        return Color.parseColor(color)
+    }
+    //Implementacion de los ciclos de vida del ListFragment
+    //Continuación
+    override fun onResume() {
+        super.onResume()
+        PreferenceManager.getDefaultSharedPreferences(requireContext()).registerOnSharedPreferenceChangeListener(this)
+    }
+    //Pausa
+    override fun onPause() {
+        super.onPause()
+        PreferenceManager.getDefaultSharedPreferences(requireContext()).unregisterOnSharedPreferenceChangeListener(this)
+    }
+
 
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+    //Implementacion de los miembros que nos vemos obligados a hacer
+    //Modificamos para que nos indique la preferencia cambiaba
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        if (key == MainActivity.PREF_COLOR_PRIORIDAD) {
+            tareaAdapter.actualizaRecyclerColor(obtenColorPreferencias())
+        }
     }
 }

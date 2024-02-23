@@ -14,6 +14,7 @@ class TareaAdapter() :RecyclerView.Adapter<TareaAdapter.TareaViewHolder>()
 
     var listaTareas: List<Tarea>?=null
        var onTareaClickListener:OnTareaClickListener?=null
+        var colorPrioridadAlta :Int=Color.TRANSPARENT
     fun setLista(lista:List<Tarea>){
         listaTareas=lista
         //notifica al adaptador que hay cambios y tiene que redibujar el
@@ -68,15 +69,26 @@ class TareaAdapter() :RecyclerView.Adapter<TareaAdapter.TareaViewHolder>()
                             else -> R.drawable.ic_cerrado
                         }
                     )
-                    //cambiamos el color de fondo si la prioridad es alta
-                    binding.cvItem.setBackgroundResource(
+                    /**binding.cvItem.setBackgroundResource(
                         if (prioridad == 2)//prioridad alta
                             R.color.prioridad_alta
+                        else
+                            Color.TRANSPARENT
+                    )*/
+                    //cambiamos el color de fondo si la prioridad es alta
+                    binding.cvItem.setBackgroundColor(
+                        if (prioridad == 2)//prioridad alta
+                            colorPrioridadAlta
                         else
                             Color.TRANSPARENT
                     )
                 }
             }
+        }
+        //Método que actualiza la lista en caso de cambiar de color
+        fun actualizaRecyclerColor(color:Int){
+            colorPrioridadAlta=color
+            notifyDataSetChanged()
         }
 
     }
