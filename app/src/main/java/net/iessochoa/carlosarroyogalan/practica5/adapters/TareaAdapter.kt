@@ -9,17 +9,22 @@ import net.iessochoa.carlosarroyogalan.practica5.R
 import net.iessochoa.carlosarroyogalan.practica5.databinding.ItemTareaBinding
 import net.iessochoa.carlosarroyogalan.practica5.model.Tarea
 
-class TareaAdapter()
-    :RecyclerView.Adapter<TareaAdapter.TareaViewHolder>()
+class TareaAdapter() :RecyclerView.Adapter<TareaAdapter.TareaViewHolder>()
     {
 
     var listaTareas: List<Tarea>?=null
-        private var onTareaClickListener:OnTareaClickListener?=null
+       var onTareaClickListener:OnTareaClickListener?=null
     fun setLista(lista:List<Tarea>){
         listaTareas=lista
         //notifica al adaptador que hay cambios y tiene que redibujar el
         notifyDataSetChanged()
     }
+        interface OnTareaClickListener{
+            //editar tarea que contiene el ViewHolder
+            fun onTareaClick(tarea:Tarea?)
+            //borrar tarea que contiene el ViewHolder
+            fun onTareaBorrarClick(tarea:Tarea?)
+        }
     inner class TareaViewHolder(val binding: ItemTareaBinding)
         :RecyclerView.ViewHolder(binding.root){
         init {
@@ -73,10 +78,5 @@ class TareaAdapter()
                 }
             }
         }
-        interface OnTareaClickListener{
-            //editar tarea que contiene el ViewHolder
-            fun onTareaClick(tarea:Tarea?)
-            //borrar tarea que contiene el ViewHolder
-            fun onTareaBorrarClick(tarea:Tarea?)
-        }
+
     }
