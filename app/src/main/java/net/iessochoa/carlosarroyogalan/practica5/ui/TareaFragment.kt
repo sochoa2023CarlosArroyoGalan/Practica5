@@ -1,8 +1,21 @@
 package net.iessochoa.carlosarroyogalan.practica5.ui
 
+import android.Manifest
+import android.app.Activity
+import android.app.AlertDialog
+import android.content.ContentValues
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.preference.PreferenceManager
+import android.provider.MediaStore
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +23,11 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.SeekBar
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -20,6 +37,12 @@ import net.iessochoa.carlosarroyogalan.practica5.R
 import net.iessochoa.carlosarroyogalan.practica5.databinding.FragmentTareaBinding
 import net.iessochoa.carlosarroyogalan.practica5.model.Tarea
 import net.iessochoa.carlosarroyogalan.practica5.viewmodel.AppViewModel
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.OutputStream
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
@@ -31,6 +54,8 @@ class TareaFragment : Fragment() {
     private val viewModel: AppViewModel by activityViewModels()
     //será una tarea nueva si no hay argumento
     val esNuevo by lazy { args.tarea==null }
+    //Creamos la varaible que guardará la foto
+    var uriFoto=""
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -63,6 +88,7 @@ class TareaFragment : Fragment() {
         iniciaRgEstado()
         iniciaSbHoras()
         iniciaFabGuardar()
+        iniciaIvBuscarFoto()
         //En caso de que la tarea sea nueva la llamaremos con un if
         if (esNuevo)//nueva tarea
         {//cambiamos el título de la ventana
@@ -191,6 +217,10 @@ class TareaFragment : Fragment() {
         binding.rtbValoracion.rating = tarea.valoracionCliente
         binding.etTecnico.setText(tarea.tecnico)
         binding.etDescripcion.setText(tarea.descripcion)
+        //Con este código podremos mostrar la imagen
+        if (!tarea.fotoUri.isNullOrEmpty())
+            binding.ivFoto.setImageURI(tarea.fotoUri.toUri())
+        uriFoto=tarea.fotoUri
         //cambiamos el título
         (requireActivity() as AppCompatActivity).supportActionBar?.title = "Tarea ${tarea.id}"
     }
@@ -211,10 +241,10 @@ class TareaFragment : Fragment() {
         //creamos la tarea: si es nueva, generamos un id, en otro caso le asignamos su id
         val tarea = if(esNuevo)
         //Asignamos una cadena vacia en las dos cadenas
-            Tarea(categoria,prioridad,pagado,estado,horas,valoracion,tecnico,descripcion, "")
+            Tarea(categoria,prioridad,pagado,estado,horas,valoracion,tecnico,descripcion, uriFoto)
         else
 
-            Tarea(args.tarea!!.id,categoria,prioridad,pagado,estado,horas,valoracion,tecnico,descripcion, "")
+            Tarea(args.tarea!!.id,categoria,prioridad,pagado,estado,horas,valoracion,tecnico,descripcion, uriFoto)
         //guardamos la tarea desde el viewmodel
         viewModel.addTarea(tarea)
         //salimos de editarFragment
@@ -241,6 +271,199 @@ class TareaFragment : Fragment() {
         val tecnico = sharedPreferences.getString(MainActivity.PREF_NOMBRE, "")
             //Se lo asignamos a /etTecnico
         binding.etTecnico.setText(tecnico)
+    }
+
+    private val TAG = "Practica5"
+    private val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
+    private fun saveBitmapImage(bitmap: Bitmap): Uri? {
+        val timestamp = SimpleDateFormat(FILENAME_FORMAT, Locale.US)
+            .format(System.currentTimeMillis())
+        var uri: Uri? = null
+        //Avisa al escaner de que el usuario ya puede usar los archivos
+        val values = ContentValues()
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+        values.put(MediaStore.Images.Media.DATE_ADDED, timestamp)
+        //Avisa de una version mayor o igual a 29
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            values.put(MediaStore.Images.Media.DATE_TAKEN, timestamp)
+            values.put(
+                MediaStore.Images.Media.RELATIVE_PATH,
+                "Pictures/" + getString(R.string.app_name)
+            )
+            values.put(MediaStore.Images.Media.IS_PENDING, true)
+            uri = requireContext().contentResolver.insert(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                values
+            )
+            if (uri != null) {
+                try {
+                    val outputStream = requireContext().contentResolver.openOutputStream(uri)
+                    if (outputStream != null) {
+                        try {
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                            outputStream.close()
+                        } catch (e: Exception) {
+                            Log.e(TAG, "saveBitmapImage: ", e)
+                        }
+                    }
+                    values.put(MediaStore.Images.Media.IS_PENDING, false)
+                    requireContext().contentResolver.update(uri, values, null, null)
+                    // Toast.makeText(requireContext(), "Saved...", Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    Log.e(TAG, "saveBitmapImage: ", e)
+                }
+            }
+        } else {//No funcional en versiones inferiores a 29
+            val imageFileFolder = File(
+                Environment.getExternalStorageDirectory()
+                    .toString() + '/' + getString(R.string.app_name)
+            )
+            if (!imageFileFolder.exists()) {
+                imageFileFolder.mkdirs()
+            }
+            val mImageName = "$timestamp.png"
+            val imageFile = File(imageFileFolder, mImageName)
+            try {
+                val outputStream: OutputStream = FileOutputStream(imageFile)
+                try {
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                    outputStream.close()
+                } catch (e: Exception) {
+                    Log.e(TAG, "saveBitmapImage: ", e)
+                }
+                values.put(MediaStore.Images.Media.DATA, imageFile.absolutePath)
+                requireContext().contentResolver.insert(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    values
+                )
+                uri = imageFile.toUri()
+                // Toast.makeText(requireContext(), "Saved...", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Log.e(TAG, "saveBitmapImage: ", e)
+            }
+        }
+        return uri
+    }
+    //Metodo para que cargue la imagen en el formulario
+    fun loadFromUri(photoUri: Uri?): Bitmap? {
+        var image: Bitmap? = null
+        try {
+            // Comprobación de que la versiona sea superior a la 27
+            image = if (Build.VERSION.SDK_INT > 27) {
+                val source = ImageDecoder.createSource(
+                    requireContext().contentResolver,
+                    photoUri!!
+                )
+                ImageDecoder.decodeBitmap(source)
+            } else {
+                // En caso de una version más antigua esta tendrá soporte con bitmap
+                MediaStore.Images.Media.getBitmap(requireContext().contentResolver,
+                    photoUri)
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return image
+    }
+
+    //Variable con permiso de solicitud dependiendo de la versión
+    private val PERMISOS_REQUERIDOS=when {
+        // Build.VERSION.SDK_INT >= 34 -> Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
+        Build.VERSION.SDK_INT >= 33 -> Manifest.permission.READ_MEDIA_IMAGES
+        else -> Manifest.permission.READ_EXTERNAL_STORAGE
+    }
+
+    //Metodo de comprobación de permisos
+    fun permisosAceptados() = ContextCompat.checkSelfPermission(
+        requireContext(),
+        PERMISOS_REQUERIDOS
+    ) == PackageManager.PERMISSION_GRANTED
+
+    //petición de foto de la galería Versión <33
+    private val solicitudFotoGalleryMenorV33 = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            //uri de la foto elegida
+            val uri = result.data?.data
+            val uriCopia = saveBitmapImage(loadFromUri(uri)!!)
+            //mostramos la foto
+            binding.ivFoto.setImageURI(uriCopia)
+            //guardamos la uri
+            uriFoto = uriCopia?.toString() ?: ""
+        }
+    }
+    //petición de foto de la galería version >=33
+    private val solicitudFotoGalleryV33 = registerForActivityResult(
+        ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        if (uri != null) {
+            //uri de la foto elegida
+            // val uri = result.data?.data
+            val uriCopia = saveBitmapImage(loadFromUri(uri)!!)
+            //mostramos la foto
+            binding.ivFoto.setImageURI(uriCopia)
+            //guardamos la uri
+            uriFoto = uriCopia?.toString() ?: ""
+        }
+    }
+
+    //Solicitud para que el usuario pueda buscar la imagen en su galeria
+    private fun buscarFoto() {
+        if (Build.VERSION.SDK_INT >= 33)
+            solicitudFotoGalleryV33.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        else {
+            val intent = Intent(Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            intent.type = "image/*"
+            solicitudFotoGalleryMenorV33.launch(intent)
+        }
+    }
+    //Metodo que explica los permisos al usuario
+    fun explicarPermisos() {
+        AlertDialog.Builder(requireContext())
+            .setTitle(android.R.string.dialog_alert_title)
+            //TODO:recuerda: el texto en string.xml
+            .setMessage("Es necesario el permiso de \"Lectura de fichero\" para mostrar una foto.\nDesea aceptar los permisos?")
+        //acción si pulsa si
+        .setPositiveButton(android.R.string.ok) { v, _ ->
+            //Solicitamos los permisos de nuevo
+            solicitudPermisosLauncher.launch(PERMISOS_REQUERIDOS)
+            //cerramos el dialogo
+            v.dismiss()
+        }
+            //accion si pulsa no
+            .setNegativeButton(android.R.string.cancel) { v, _ -> v.dismiss() }
+            .setCancelable(false)
+            .create()
+            .show()
+    }
+    //Metodo que solicita los permisos al usuario
+    private val solicitudPermisosLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                // Permission has been granted.
+                buscarFoto()
+            } else {
+                // Permission request was denied.
+                explicarPermisos()
+            }
+        }
+    //Metodo en el que al pulsar sobre el icono en caso de tener permisos bucará la foto o en caso contrario solicitará permiso
+    fun iniciaIvBuscarFoto() {
+        binding.ivBuscarFoto.setOnClickListener() {
+            when {
+                //La versión 34 el usuario puede dar permiso a fotos individualmente
+                //el sistema gestiona los permisos
+                Build.VERSION.SDK_INT >= 34->buscarFoto()
+                //para otras versiones si tenemos los permisos
+                permisosAceptados() -> buscarFoto()
+                //no tenemos los permisos : los solicitamos
+                else -> solicitudPermisosLauncher.launch(PERMISOS_REQUERIDOS)
+            }
+        }
     }
 
     override fun onDestroyView() {

@@ -2,6 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Dispositivos corriendo android 12 (API 32) o inferiores -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <!-- Dispositivos corriendo android 13 (API 33) o superior -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <!-- En caso de reselección con la app usando android 14 (API 34) -->
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
