@@ -211,7 +211,6 @@
         android:layout_height="102dp"
         android:layout_marginStart="22dp"
         android:layout_marginTop="14dp"
-        android:layout_marginEnd="30dp"
         android:layout_marginBottom="26dp"
         app:layout_constraintBottom_toBottomOf="@+id/sbHoras"
         app:layout_constraintEnd_toEndOf="parent"
@@ -224,12 +223,26 @@
         android:layout_width="40dp"
         android:layout_height="34dp"
         android:layout_marginStart="100dp"
-        android:layout_marginTop="14dp"
+        android:layout_marginTop="3dp"
         android:layout_marginEnd="3dp"
         android:layout_marginBottom="20dp"
         android:src="@drawable/icon_image_512"
         app:layout_constraintBottom_toTopOf="@+id/rgEstado"
         app:layout_constraintEnd_toStartOf="@+id/ivFoto"
+        app:layout_constraintStart_toEndOf="@+id/swPagado"
+        app:layout_constraintTop_toBottomOf="@+id/spPrioridad" />
+
+    <ImageView
+        android:id="@+id/ivHacerFoto"
+        android:layout_width="39dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="61dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginBottom="24dp"
+        android:src="@drawable/_60_f_107579101_qvltg43fwg9q6ggwf436mpibtvpakktb"
+        app:layout_constraintBottom_toTopOf="@+id/rgEstado"
+        app:layout_constraintEnd_toStartOf="@+id/ivBuscarFoto"
         app:layout_constraintStart_toEndOf="@+id/swPagado"
         app:layout_constraintTop_toBottomOf="@+id/spPrioridad" />
 
