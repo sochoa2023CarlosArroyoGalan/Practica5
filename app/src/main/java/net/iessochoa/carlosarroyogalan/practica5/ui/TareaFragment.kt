@@ -438,7 +438,7 @@ class TareaFragment : Fragment() {
             .create()
             .show()
     }
-    //Metodo que solicita los permisos al usuario
+    //Metodo que solicita los permisos al usuario/
     private val solicitudPermisosLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
