@@ -239,7 +239,7 @@ class TareaFragment : Fragment() {
             PreferenceManager.getDefaultSharedPreferences(requireContext())
             //Recuperamos el nombre de nuestro usuario (tambien hemos cambiado el metodo a MainActivity.PREF_NOMBRE)
         val tecnico = sharedPreferences.getString(MainActivity.PREF_NOMBRE, "")
-            //Se lo asignamos a etTecnico
+            //Se lo asignamos a /etTecnico
         binding.etTecnico.setText(tecnico)
     }
 
