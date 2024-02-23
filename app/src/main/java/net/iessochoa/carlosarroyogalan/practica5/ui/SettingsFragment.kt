@@ -24,7 +24,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
         val telefonoContacto: Preference? = findPreference("telefonoContacto")
 
-// Definimos la acción para la preferencia del teléfono de contacto
+// Definimos la acción para la preferencia del teléfono de contacto/
         telefonoContacto?.setOnPreferenceClickListener {
             val intent = Intent(Intent.ACTION_DIAL)
             intent.data = Uri.parse("tel:966912260")
