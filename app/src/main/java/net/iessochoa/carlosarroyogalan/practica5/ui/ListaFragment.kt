@@ -109,7 +109,7 @@ class ListaFragment : Fragment() {
                 )
             }
         }
-      //  binding.tvLista.setText(listaString)
+      ///  binding.tvLista.setText(listaString)
     }
     private fun iniciaFiltros(){
         binding.swSinPagar.setOnCheckedChangeListener( ) { _,isChecked->
