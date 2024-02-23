@@ -23,7 +23,7 @@ object ModelTempTareas {
         tareasLiveData.value= tareas
         return tareasLiveData
     }
-    fun addTarea(tarea: Tarea) {
+    suspend fun addTarea(tarea: Tarea) {
         val pos = tareas.indexOf(tarea)
         if (pos < 0) {//si no existe
             tareas.add(tarea)
@@ -32,7 +32,9 @@ object ModelTempTareas {
             tareas.set(pos, tarea)
         }
         //actualiza el LiveData
-        tareasLiveData.value = tareas
+        //tareasLiveData.value = tareas
+
+        tareasLiveData.postValue(tareas)
     }
     fun iniciaPruebaTareas() {
         val tecnicos = listOf(
@@ -64,7 +66,7 @@ object ModelTempTareas {
     suspend fun delTarea(tarea: Tarea) {
         // Thread.sleep(10000)
         tareas.remove(tarea)
-        //tareasLiveData.value = tareasç
+        //tareasLiveData.value = tareas
         //Cambiamos el tarea live data a postValue para poder usar el LiveData de forma concurrente
         tareasLiveData.postValue(tareas)
     }

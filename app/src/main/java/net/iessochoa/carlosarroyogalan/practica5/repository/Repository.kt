@@ -16,7 +16,8 @@ object Repository {
         ModelTempTareas(application)
         modelTareas=ModelTempTareas
     }
-    fun addTarea(tarea: Tarea)= modelTareas.addTarea(tarea)
+    //Encapsulamos addTarea en una corrutina
+    suspend fun addTarea(tarea: Tarea) =  modelTareas.addTarea(tarea)
     //Marcamos delTarea como función suspend
     suspend fun delTarea(tarea: Tarea)= modelTareas.delTarea(tarea)
     fun getAllTareas()=modelTareas.getAllTareas()
