@@ -1,5 +1,7 @@
 package net.iessochoa.carlosarroyogalan.practica5.ui
 
+import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -143,18 +145,38 @@ class ListaFragment : Fragment() {
         }
         tareaAdapter.onTareaClickListener = object : TareaAdapter.OnTareaClickListener
             {
-            //Codigo para la edicion de la tarea
+            //Llamamos el metodo para la edicion de la tarea
             override fun onTareaClick(tarea: Tarea?) {
                 val action = ListaFragmentDirections.actionEditar(tarea)
                 findNavController().navigate(action)
             }
-            //Codigo bara borrar la tarea
+            //Llamamos el método para que salga el cuadro de texto a la hora de borrar
             override fun onTareaBorrarClick(tarea: Tarea?) {
-                //borramos directamente la tarea
-                viewModel.delTarea(tarea!!)
+                //borramos la tarea
+                borrarTarea(tarea!!)
             }
         }
     }
+    //Añadimos el metodo que hará que cuando intentemos borrar una tarea nos salga un cuadro de dialogo en caso de que queramos confirmar
+    fun borrarTarea(tarea:Tarea){
+        AlertDialog.Builder(activity as Context)
+            .setTitle(android.R.string.dialog_alert_title)
+            //recuerda: todo el texto en string.xml
+            .setMessage("Desea borrar la Tarea ${tarea.id}?")
+            //acción si pulsa si
+            .setPositiveButton(android.R.string.ok){v,_->
+                //borramos la tarea
+                viewModel.delTarea(tarea)
+                //cerramos el dialogo
+                v.dismiss()
+            }
+            //accion si pulsa no
+            .setNegativeButton(android.R.string.cancel){v,_->v.dismiss()}
+            .setCancelable(false)
+            .create()
+            .show()
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
