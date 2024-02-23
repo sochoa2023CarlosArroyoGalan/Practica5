@@ -45,7 +45,8 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             //Llamamiento en caso de que el usuario pulse sobre la acción
             R.id.action_prueba -> actionPrueba()
-            R.id.action_settings -> true
+            //Llamamos el método anteriormente creado
+            R.id.action_settings -> actionSettings()
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -58,6 +59,11 @@ class MainActivity : AppCompatActivity() {
     //Creamos un método para la acción de prueba
     fun actionPrueba():Boolean{
         Toast.makeText(this,"Prueba de menú",Toast.LENGTH_SHORT).show()
+        return true
+    }
+    //Creamos un método el cual llamará al fragment de Navigation
+    private fun actionSettings(): Boolean {
+        findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.settingsFragment)
         return true
     }
 }
