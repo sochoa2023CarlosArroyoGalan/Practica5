@@ -60,9 +60,13 @@ object ModelTempTareas {
         //actualizamos el LiveData
         tareasLiveData.value = tareas
     }
-    fun delTarea(tarea: Tarea) {
+    //Marcamos delTarea como función suspend
+    suspend fun delTarea(tarea: Tarea) {
+        // Thread.sleep(10000)
         tareas.remove(tarea)
-        tareasLiveData.value = tareas
+        //tareasLiveData.value = tareasç
+        //Cambiamos el tarea live data a postValue para poder usar el LiveData de forma concurrente
+        tareasLiveData.postValue(tareas)
     }
     fun getTareasFiltroSinPagar(soloSinPagar:Boolean): LiveData<List<Tarea>> {
         //devuelve el LiveData con la lista filtrada o entera

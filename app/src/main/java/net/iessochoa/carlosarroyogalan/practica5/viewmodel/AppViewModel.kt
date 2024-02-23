@@ -5,6 +5,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.switchMap
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import net.iessochoa.carlosarroyogalan.practica5.model.Tarea
 import net.iessochoa.carlosarroyogalan.practica5.repository.Repository
 
@@ -56,7 +59,10 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
     fun addTarea(tarea: Tarea) = repositorio.addTarea(tarea)
-    fun delTarea(tarea: Tarea) = repositorio.delTarea(tarea)
+    //fun delTarea(tarea: Tarea) = repositorio.delTarea(tarea)
+    //delTarea modificado para poder lanzar la corrutina
+    fun delTarea(tarea: Tarea) = viewModelScope.launch(Dispatchers.IO){
+        Repository.delTarea(tarea)}
     /**
      * Modifica el Map filtrosLiveData el elemento "SOLO_SIN_PAGAR"
      * que activará el Transformations de TareasLiveData
