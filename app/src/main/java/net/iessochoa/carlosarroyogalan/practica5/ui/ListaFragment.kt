@@ -2,6 +2,7 @@ package net.iessochoa.carlosarroyogalan.practica5.ui
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import net.iessochoa.carlosarroyogalan.practica5.R
 import net.iessochoa.carlosarroyogalan.practica5.adapters.TareaAdapter
@@ -130,8 +132,14 @@ class ListaFragment : Fragment() {
 
         with(binding.rvTareas) {
             //Creación del layoutManager
-            layoutManager = LinearLayoutManager(activity)
+            //layoutManager = LinearLayoutManager(activity)
             //Asignación del adaptador
+            val orientation=resources.configuration.orientation
+            layoutManager =if(orientation==Configuration.ORIENTATION_PORTRAIT)
+                //Posición Vertical
+                LinearLayoutManager(activity)
+            else//Posición Horizontal, en este caso ponemos el spanCount a 2 para tener 2 columnas
+                GridLayoutManager(activity,2)
             adapter = tareaAdapter
         }
     }
