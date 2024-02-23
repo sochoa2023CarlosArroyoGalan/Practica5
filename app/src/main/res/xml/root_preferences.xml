@@ -38,4 +38,16 @@
             android:title="@string/nuevas_tareas"
             app:key="avisar_nuevas_tareas" />
     </PreferenceCategory>
+    //Añadimos el preference categorie, dentro de este metemos las preferencias de la version de compilacion en la que irá la pagina y el contacto
+    <PreferenceCategory android:title="Acerca de...">
+        <Preference
+            app:key="buildVersion"
+            app:summary="Practica5 1.0.0"
+            app:title="Versión de compilación" />
+        <Preference
+            app:key="telefonoContacto"
+            app:summary=" 966 91 22 60"
+            app:title="Teléfono de contacto" />
+    </PreferenceCategory>
+
 </PreferenceScreen>
