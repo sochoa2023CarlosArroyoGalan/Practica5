@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
     id("androidx.navigation.safeargs.kotlin")
+    id ("kotlin-kapt")
 }
 
 android {
@@ -29,11 +30,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         viewBinding = true
@@ -62,5 +63,10 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android: 1.7.3")
     //preferencias
     implementation ("androidx.preference:preference-ktx:1.2.1")
-
+// Room components
+    implementation("androidx.room:room-ktx:2.6.0")
+    implementation("androidx.preference:preference:1.2.1")
+    kapt ("androidx.room:room-compiler:2.6.0")
+// Lifecycle components
+    implementation ("androidx.lifecycle:lifecycle-common-java8:2.6.2")
 }
