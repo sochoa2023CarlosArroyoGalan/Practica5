@@ -13,7 +13,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import net.iessochoa.carlosarroyogalan.practica5.R
 import net.iessochoa.carlosarroyogalan.practica5.adapters.TareaAdapter
 import net.iessochoa.carlosarroyogalan.practica5.databinding.FragmentListaBinding
@@ -142,6 +144,8 @@ class ListaFragment : Fragment() {
                 GridLayoutManager(activity,2)
             adapter = tareaAdapter
         }
+        //Llamamos el metodo de deslizamiento en RecyclerView
+        iniciaSwiped()
     }
 
     private fun iniciaCRUD(){
@@ -183,6 +187,35 @@ class ListaFragment : Fragment() {
             .setCancelable(false)
             .create()
             .show()
+    }
+    //A continuacion crearemos el evento de animación a la hora de borrar una tarea
+    fun iniciaSwiped(){
+        //Codigo para detectar el deslizamiento
+        val itemTouchHelperCallback =
+            object :
+                ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or
+                        ItemTouchHelper.RIGHT) {
+                //Overide para cuando cuando detecte el movimiento
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean {
+                    return false
+                }
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder,
+                                      direction: Int) {
+                    //Posición de la tarea
+                    val tareaDelete=tareaAdapter.listaTareas?.get(viewHolder.adapterPosition)
+                    //Eliminacion de la tarea llamando al metodo anterior
+                            if (tareaDelete != null) {
+                                viewModel.delTarea(tareaDelete)
+                            }
+                }
+            }
+        val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
+        //Evento enlazado con RecyclerView
+        itemTouchHelper.attachToRecyclerView(binding.rvTareas)
     }
 
 
