@@ -210,11 +210,11 @@ class TareaFragment : Fragment() {
         val descripcion=binding.etDescripcion.text.toString()
         //creamos la tarea: si es nueva, generamos un id, en otro caso le asignamos su id
         val tarea = if(esNuevo)
-
-            Tarea(categoria,prioridad,pagado,estado,horas,valoracion,tecnico,descripcion)
+        //Asignamos una cadena vacia en las dos cadenas
+            Tarea(categoria,prioridad,pagado,estado,horas,valoracion,tecnico,descripcion, "")
         else
 
-            Tarea(args.tarea!!.id,categoria,prioridad,pagado,estado,horas,valoracion,tecnico,descripcion)
+            Tarea(args.tarea!!.id,categoria,prioridad,pagado,estado,horas,valoracion,tecnico,descripcion, "")
         //guardamos la tarea desde el viewmodel
         viewModel.addTarea(tarea)
         //salimos de editarFragment

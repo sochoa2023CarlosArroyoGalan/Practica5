@@ -18,7 +18,9 @@ data class Tarea(
     val horasTrabajo:Int,
     val valoracionCliente:Float,
     val tecnico:String,
-    val descripcion:String
+    val descripcion:String,
+    //Añadimos el campo uri
+    val fotoUri:String
 ):Parcelable {
     constructor( categoria:Int,
                  prioridad:Int,
@@ -27,8 +29,11 @@ data class Tarea(
                  horasTrabajo:Int,
                  valoracionCliente:Float,
                  tecnico:String,
+                 //También en el constructor
                  //Modificamos los campos cambiando el id a null para que cree una nueva en la base de datos
-                 descripcion:String):this(null,categoria,prioridad,pagado,estado,horasTrabajo,valoracionCliente, tecnico, descripcion){}
+                 descripcion:String,
+                 fotoUri: String):
+                    this(null,categoria,prioridad,pagado,estado,horasTrabajo,valoracionCliente, tecnico, descripcion, fotoUri){}
     companion object {
         var idContador = 1L//iniciamos contador de tareas
         private fun generateId(): Long {

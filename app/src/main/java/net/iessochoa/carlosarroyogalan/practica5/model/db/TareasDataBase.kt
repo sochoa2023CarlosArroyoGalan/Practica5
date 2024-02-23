@@ -41,9 +41,9 @@ import kotlin.random.Random
                     lateinit var tarea: Tarea
                     (1..15).forEach({
                         tarea = Tarea(
-                            (0..4).random(), (0..2).random(),
-                            Random.nextBoolean(), (0..2).random(), (0..30).random(),
-                            (0..5).random().toFloat(), tecnicos.random(), "tarea $it realizada por el técnico \nLorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris consequat ligula et vehicula mattis. Etiam tristique ornare lacinia. Vestibulum lacus magna, dignissim et tempor id, convallis sed augue"
+                            (0..4).random(), (0..2).random(), Random.nextBoolean(), (0..2).random(), (0..30).random(),
+                            (0..5).random().toFloat(), tecnicos.random(), "tarea $it realizada por el técnico \nLorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris consequat ligula et vehicula mattis. Etiam tristique ornare lacinia. Vestibulum lacus magna, dignissim et tempor id, convallis sed augue",
+                            ""
                         )
                         tareasDao.addTarea(tarea)
                     })

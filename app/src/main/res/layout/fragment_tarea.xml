@@ -205,4 +205,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
 
+    <ImageView
+        android:id="@+id/ivFoto"
+        android:layout_width="105dp"
+        android:layout_height="102dp"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="26dp"
+        app:layout_constraintBottom_toBottomOf="@+id/sbHoras"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/rgEstado"
+        app:layout_constraintTop_toBottomOf="@+id/spPrioridad"
+        tools:src="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/ivBuscarFoto"
+        android:layout_width="40dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/icon_image_512"
+        app:layout_constraintBottom_toTopOf="@+id/rgEstado"
+        app:layout_constraintEnd_toStartOf="@+id/ivFoto"
+        app:layout_constraintStart_toEndOf="@+id/swPagado"
+        app:layout_constraintTop_toBottomOf="@+id/spPrioridad" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
