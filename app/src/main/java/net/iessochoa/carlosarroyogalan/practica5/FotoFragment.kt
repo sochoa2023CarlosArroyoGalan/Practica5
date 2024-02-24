@@ -24,6 +24,8 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import net.iessochoa.carlosarroyogalan.practica5.databinding.FragmentFotoBinding
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -39,6 +41,7 @@ class FotoFragment : Fragment() {
     private var _binding: FragmentFotoBinding? = null
     private val binding get() = _binding!!
     //Se crea la variable que hará la foto de la imagen
+    val args: FotoFragmentArgs by navArgs()
     private var imageCapture: ImageCapture? = null
     //Se crea un array que tenga los permisos necesarios para la cámara
     private val PERMISOS_REQUERIDOS =
@@ -73,6 +76,13 @@ class FotoFragment : Fragment() {
         // Infla el layout del fragmento
         _binding = FragmentFotoBinding.inflate(inflater, container, false)
         return binding.root
+
+        binding.ivMuestra.setOnClickListener(){
+            var tarea=args.tarea?.copy(fotoUri =uriFoto.toString())
+            val action =
+                FotoFragmentDirections.actionFotoFragmentToTareaFragment(tarea)
+            findNavController().navigate(action)
+        }
     }
     //Metodo de comprobación de permisos
     private fun allPermissionsGranted() = PERMISOS_REQUERIDOS.all {
@@ -195,5 +205,7 @@ class FotoFragment : Fragment() {
                 }
             }
         )
+
     }
+
 }

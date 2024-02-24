@@ -61,6 +61,7 @@ class TareaFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -68,6 +69,11 @@ class TareaFragment : Fragment() {
 
         _binding = FragmentTareaBinding.inflate(inflater, container, false)
         return binding.root
+
+        binding.ivHacerFoto.setOnClickListener {
+            val action = TareaFragmentDirections.hacerFoto(creaTarea())
+            findNavController().navigate(action)
+        }
 
     }
 
@@ -227,6 +233,12 @@ class TareaFragment : Fragment() {
     }
     private fun guardaTarea() {
         //recuperamos los datos
+        //guardamos la tarea desde el viewmodel
+        viewModel.addTarea(creaTarea())
+        //salimos de editarFragment
+        findNavController().popBackStack()
+    }
+    private fun creaTarea():Tarea{
         val categoria=binding.spCategoria.selectedItemPosition
         val prioridad=binding.spPrioridad.selectedItemPosition
         val pagado=binding.swPagado.isChecked
@@ -241,15 +253,12 @@ class TareaFragment : Fragment() {
         val descripcion=binding.etDescripcion.text.toString()
         //creamos la tarea: si es nueva, generamos un id, en otro caso le asignamos su id
         val tarea = if(esNuevo)
-        //Asignamos una cadena vacia en las dos cadenas
+
             Tarea(categoria,prioridad,pagado,estado,horas,valoracion,tecnico,descripcion, uriFoto)
-        else
+        else//venimos de hacer foto
 
             Tarea(args.tarea!!.id,categoria,prioridad,pagado,estado,horas,valoracion,tecnico,descripcion, uriFoto)
-        //guardamos la tarea desde el viewmodel
-        viewModel.addTarea(tarea)
-        //salimos de editarFragment
-        findNavController().popBackStack()
+        return tarea
     }
     private fun muestraMensajeError() {
         val mensaje=getString(R.string.mensaje_vacio)
