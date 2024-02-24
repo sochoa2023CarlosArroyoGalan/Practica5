@@ -74,6 +74,7 @@ class TareaFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //Evento que hace que el boton de la camara funcione.
         binding.ivHacerFoto.setOnClickListener {
             findNavController().navigate(R.id.hacer_Foto)
         }
